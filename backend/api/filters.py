@@ -1,8 +1,9 @@
-from django_filters import rest_framework as filters
 from django.contrib.auth import get_user_model
+from django_filters import rest_framework as filters
 from recipes.models import Recipe, Tag
 
 User = get_user_model()
+
 
 class RecipeFilter(filters.FilterSet):
     author = filters.ModelChoiceFilter(queryset=User.objects.all())
@@ -11,7 +12,9 @@ class RecipeFilter(filters.FilterSet):
         field_name='tags__slug',
         to_field_name='slug'
     )
-    is_in_shopping_cart = filters.BooleanFilter(method='filter_is_in_shopping_cart')
+    is_in_shopping_cart = filters.BooleanFilter(
+        method='filter_is_in_shopping_cart'
+    )
     is_favorited = filters.BooleanFilter(method='filter_is_favorited')
 
     class Meta:
@@ -29,4 +32,3 @@ class RecipeFilter(filters.FilterSet):
         if user.is_authenticated and value:
             return queryset.filter(favorites__user=user)
         return queryset
-

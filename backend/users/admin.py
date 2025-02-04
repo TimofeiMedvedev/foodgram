@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+
 from .models import Follow
 
 User = get_user_model()
@@ -16,7 +17,7 @@ class UserAdmin(admin.ModelAdmin):
 
     def follow_amount(self, obj):
         return obj.following.count()
-    
+
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):

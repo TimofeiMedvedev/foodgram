@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,7 +12,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'SECRET_KEY_DEFOULT')
 DEBUG = os.environ.get('DEBUG') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1').split(',')
-
 
 
 INSTALLED_APPS = [
@@ -130,23 +130,18 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'SEARCH_PARAM': 'name'
 }
-   
 
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'HIDE_USERS': False,
     'SERIALIZERS': {
-        # 'user_create': 'api.serializers.CustomCreateUserSerializer',
-        # 'user': 'api.serializers.CustomUserSerializer',
-        # 'current_user': 'api.serializers.CustomUserSerializer',   
+        'current_user': 'api.serializers.CustomUserSerializer',
         'set_password': 'api.serializers.CustomChangePasswordSerializer',
     },
 
     'PERMISSIONS': {
         'user_list': ('rest_framework.permissions.AllowAny',),
-        # 'user': ('rest_framework.permissions.AllowAny',),
-        # 'set_password': ['rest_framework.permissions.IsAuthenticated']
     },
 }
 

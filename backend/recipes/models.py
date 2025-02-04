@@ -1,19 +1,21 @@
 from django.contrib.auth import get_user_model
-from django.db import models
-from foodgram.constants import MAX_LENGTH_NAME, MAX_LENGTH_SLUG, MAX_LENGTH_ING, MAX_LENGTH_RECIPE_NAME
 from django.core.validators import MinValueValidator
-import shortuuid
+from django.db import models
+
+from foodgram.constants import (MAX_LENGTH_ING, MAX_LENGTH_NAME,
+                                MAX_LENGTH_RECIPE_NAME, MAX_LENGTH_SLUG)
 
 User = get_user_model()
 
+
 class Tag(models.Model):
     name = models.CharField(
-        max_length=MAX_LENGTH_NAME, 
+        max_length=MAX_LENGTH_NAME,
         unique=True,
         verbose_name='Название тэга',
     )
     slug = models.SlugField(
-        max_length=MAX_LENGTH_SLUG, 
+        max_length=MAX_LENGTH_SLUG,
         unique=True,
         verbose_name='Слаг тэга'
     )
@@ -25,7 +27,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Ingredient(models.Model):
     name = models.CharField(
@@ -35,7 +37,6 @@ class Ingredient(models.Model):
     measurement_unit = models.CharField(
         max_length=MAX_LENGTH_NAME,
         verbose_name='Единица измерения ингредиента')
- 
 
     class Meta:
         verbose_name = 'Ингредиент'
@@ -43,7 +44,7 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Recipe(models.Model):
     tags = models.ManyToManyField(
@@ -78,27 +79,27 @@ class Recipe(models.Model):
         validators=[MinValueValidator(1)],
         verbose_name='Время приготовления в минутах',
     )
-    short_link = models.CharField(
+    direct_link = models.CharField(
         max_length=10,
         blank=True,
         null=True,
         unique=True,
         verbose_name="Прямая ссылка",
     )
-    # def get_or_create_short_link(self):
-    #     if not self.short_link:
-    #         self.short_link = shortuuid.uuid()[:7]
-    #         self.save(update_fields=["short_link"])
-    #     return self.short_link
-    
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата публикации',
+    )
+
     class Meta:
         verbose_name = "рецепт"
         verbose_name_plural = "Рецепты"
-
+        ordering = ('-pub_date',)
 
     def __str__(self):
         return self.name
-    
+
+
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
@@ -114,7 +115,7 @@ class RecipeIngredient(models.Model):
         validators=[MinValueValidator(1)],
         verbose_name="Количество"
     )
- 
+
     class Meta:
         verbose_name = 'Ингредиент в рецепте'
         verbose_name_plural = 'Ингредиенты в рецептах'
@@ -165,4 +166,3 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
-

@@ -6,7 +6,6 @@ from chardet import detect
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
-
 from recipes.models import Ingredient
 
 User = get_user_model()
