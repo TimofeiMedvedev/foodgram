@@ -4,7 +4,7 @@ from django.db import models
 
 from foodgram.constants import (MAX_LENGTH_ING, MAX_LENGTH_NAME,
                                 MAX_LENGTH_RECIPE_NAME, MAX_LENGTH_SLUG)
-import shortuuid
+
 User = get_user_model()
 
 
@@ -83,24 +83,6 @@ class Recipe(models.Model):
         auto_now_add=True,
         verbose_name='Дата публикации',
     )
-    short_link = models.CharField(
-        max_length=10,
-        blank=True,
-        null=True,
-        unique=True,
-        verbose_name="Короткая ссылка",
-    )
-    
-    # pub_date = models.DateTimeField(
-    #     auto_now_add=True,
-    #     verbose_name='Дата публикации',
-    # )
-
-    def get_or_create_short_link(self):
-        if not self.short_link:
-            self.short_link = shortuuid.uuid()[:7]
-            self.save(update_fields=["short_link"])
-        return self.short_link
 
     class Meta:
         verbose_name = "рецепт"
