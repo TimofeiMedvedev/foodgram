@@ -167,14 +167,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     pagination_class = UserPagination
 
     def get_serializer_class(self):
-        if self.action in ['list', 'retrive',]:
+        if self.action in ['list', 'retrive']:
             return RecipeReadSerializer
         return RecipeCreateSerializer
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy',
                            'favorite', 'download_shopping_cart',
-                           'shopping_cart',]:
+                           'shopping_cart']:
             return [IsAuthenticated(), IsAuthorOrReadOnly()]
         return [AllowAny()]
 
