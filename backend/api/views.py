@@ -183,9 +183,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer.save(author=self.request.user)
 
     @action(detail=True, methods=['GET'], url_path='get-link')
-    def get_direct_link(self, request, pk=None):
-        direct_url = request.build_absolute_uri(f'/recipes/{pk}')
-        return Response({'direct-link': direct_url},
+    def get_short_link(self, request, pk=None):
+        # recipe = self.get_object()
+        # short_link = recipe.get_or_create_short_link()
+        short_url = request.build_absolute_uri(f'/recipes/{pk}')
+        return Response({"short-link": short_url},
                         status=status.HTTP_200_OK)
 
     @action(
