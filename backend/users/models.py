@@ -9,6 +9,8 @@ from .validators import username_validator
 
 
 class User(AbstractUser):
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
 
     username = models.CharField(
         ('username'),
@@ -32,7 +34,7 @@ class User(AbstractUser):
     avatar = models.ImageField(
         upload_to='users/',
         null=True,
-        default=None
+        default=''
     )
     password = models.CharField(
         max_length=MAX_LENGTH_PASSWORD,
@@ -65,3 +67,12 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                name='unique_user_following',
+                fields=['user', 'following']),
+            models.CheckConstraint(
+                check=~models.Q(user=models.F('following')),
+                name='user_youself'
+            ),
+        ]
