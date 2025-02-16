@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.db.models import Sum
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -7,7 +6,7 @@ from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import filters, status, viewsets
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -60,9 +59,7 @@ class CustomUserViewSet(UserViewSet):
         if request.method == 'POST':
             recipes_limit = request.query_params.get('recipes_limit')
             serializer = FollowCreateSerializer(
-                data={
-                        'following': id
-                     },
+                data={'following': id},
                 context={'request': request}
             )
             serializer.is_valid(raise_exception=True)
@@ -85,12 +82,11 @@ class CustomUserViewSet(UserViewSet):
             following=following
         ).delete()
         if not deleted:
-            return Response( 
+            return Response(
                 {'errors': 'Этот автор не был подписан'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         return Response(status=status.HTTP_204_NO_CONTENT)
-           
 
     @action(detail=False, methods=['GET'],
             permission_classes=(AllowAny,))
@@ -160,7 +156,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
     pagination_class = UserPagination
 
-
     def get_queryset(self):
         return Recipe.objects.prefetch_related(
             'ingredients', 'tags'
@@ -193,7 +188,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             {'short-link': clear_url},
             status=status.HTTP_200_OK
         )
-
 
     @action(
         detail=True,
@@ -231,13 +225,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'ingredient__name',
             'ingredient__measurement_unit').annotate(amount=Sum('amount'))
         response = HttpResponse(
-            counting_shop_list(ingredients), 
+            counting_shop_list(ingredients),
             content_type='text/plain')
         response['Content-Disposition'] = (
             'attachment; filename="shopping_cart.txt"'
         )
-        return response 
-    
+        return response
+
     @action(
         detail=True,
         methods=['POST', 'DELETE'],
@@ -269,12 +263,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         shop_favorite_data = RecipeMiniSerializer(
             shop_favorite.recipe,
             context={'request': request}).data
-        
         return Response(
             data=shop_favorite_data,
             status=status.HTTP_201_CREATED
         )
-    
+
     def shopping_favorite_delete(self, request, model, pk=None):
         recipe = get_object_or_404(Recipe, id=pk)
         deleted, _ = model.objects.filter(
@@ -282,7 +275,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             recipe=recipe
         ).delete()
         if not deleted:
-            return Response( 
+            return Response(
                 {'errors': 'Этот объект не был подписан или в избранном'},
                 status=status.HTTP_400_BAD_REQUEST
             )

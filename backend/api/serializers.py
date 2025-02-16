@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.shortcuts import get_object_or_404
 from djoser.serializers import (SetPasswordSerializer, UserCreateSerializer,
                                 UserSerializer)
 from rest_framework import serializers
@@ -52,8 +51,8 @@ class CustomUserSerializer(UserSerializer):
                 instance.avatar.delete()
             instance.avatar = avatar
         return super().update(instance, validated_data)
-    
-    
+
+
 class CustomCreateUserSerializer(UserCreateSerializer):
     class Meta:
         model = User
@@ -80,9 +79,11 @@ class CustomCreateUserSerializer(UserCreateSerializer):
         user.save()
         return user
 
+
 class CustomChangePasswordSerializer(SetPasswordSerializer):
     current_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
+
     def validate_new_password(self, value):
         validate_password(value)
         return value
@@ -140,7 +141,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
-    
+
 
 class FollowCreateSerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -171,7 +172,6 @@ class FollowCreateSerializer(serializers.Serializer):
         return Follow.objects.create(**validated_data)
 
 
-
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -181,13 +181,14 @@ class TagSerializer(serializers.ModelSerializer):
             'slug',
         )
 
+
 class Ingredientserializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
         fields = (
-            'id', 
-            'name', 
+            'id',
+            'name',
             'measurement_unit',
         )
 
@@ -223,7 +224,7 @@ class AddIngredientToRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = (
-            'id', 
+            'id',
             'amount'
         )
 
@@ -415,4 +416,3 @@ class FavoriteSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'Этот рецепт уже есть')
         return attrs
-    
