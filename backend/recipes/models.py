@@ -58,7 +58,6 @@ class Recipe(models.Model):
         Tag,
         related_name='recipes',
         verbose_name='Тэги',
-        through='RecipeTag'
     )
     author = models.ForeignKey(
         User,
@@ -141,25 +140,6 @@ class RecipeIngredient(models.Model):
             f'{self.amount} - '
             f'{self.ingredient.measurement_unit} - '
         )
-
-
-class RecipeTag(models.Model):
-
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        verbose_name='Рецепт'
-    )
-
-    tag = models.ForeignKey(
-        Tag,
-        on_delete=models.CASCADE,
-        verbose_name='Тэг'
-    )
-
-    class Meta:
-        verbose_name = 'Тэг в рецепте'
-        verbose_name_plural = 'Тэги в рецептах'
 
 
 class ShoppingCart(models.Model):

@@ -7,6 +7,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 SECRET_KEY = os.environ.get('SECRET_KEY', 'SECRET_KEY_DEFOULT')
 
 DEBUG = os.environ.get('DEBUG') == 'True'
@@ -144,4 +145,4 @@ ACCOUNT_USERNAME_REQUIRED = False
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-src_paths = '/foodgram'
+src_paths = '/foodgram/backend'
