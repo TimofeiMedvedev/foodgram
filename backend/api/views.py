@@ -231,7 +231,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def download_cart(self, request):
         user = request.user
-        response = HttpResponse(content_type="text/plain")
+        response = HttpResponse(content_type='text/plain')
         ingredients = RecipeIngredient.objects.filter(
             recipe__recipe_cart__user=user
         ).values(
