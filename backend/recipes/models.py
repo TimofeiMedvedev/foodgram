@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+import shortuuid
 
 from foodgram.constants import (
     MAX_AMOUNT,
@@ -109,10 +110,17 @@ class Recipe(models.Model):
         verbose_name='Дата публикации',
     )
 
+    def get_or_create_short_link(self):
+        if not self.short_link:
+            self.short_link = shortuuid.uuid()[:8]
+            self.save(update_fields=["short_link"])
+        return self.short_link
+    
     class Meta:
         verbose_name = 'рецепт'
         verbose_name_plural = 'Рецепты'
         ordering = ('-pub_date',)
+
 
     def __str__(self):
         return self.name

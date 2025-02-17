@@ -1,14 +1,15 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 from recipes.models import (
     Favorite,
@@ -191,17 +192,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    @action(detail=True, methods=['GET'], url_path='get-link')
-    def get_short_link(self, request, pk=None):
-        url = request.build_absolute_uri(
-            reverse('api:recipes-detail', args={pk}))
-        clear_url = url.replace('api/', '')
-
-        return Response(
-            {'short-link': clear_url},
-            status=status.HTTP_200_OK
-        )
-
     @action(
         detail=True,
         methods=['POST', 'DELETE'],
@@ -293,3 +283,21 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        methods=["get"],
+        detail=True,
+        permission_classes=[AllowAny],
+        url_path="get-link",
+    )
+    def get_short_link(self, request, pk=None):
+        recipe = self.get_object()
+        short_link = recipe.get_or_create_short_link()
+        short_url = request.build_absolute_uri(f"/s/{short_link}")
+        return Response({"short-link": short_url},
+                        status=status.HTTP_200_OK)
+
+def redirect_short_link(request, short_id):
+    recipe = get_object_or_404(Recipe, short_link=short_id)
+    absolute_url = request.build_absolute_uri(f'/recipes/{recipe.id}')
+    return HttpResponseRedirect(absolute_url)
