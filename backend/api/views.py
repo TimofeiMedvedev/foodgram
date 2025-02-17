@@ -1,44 +1,30 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
+from django.http import HttpResponseRedirect
 from django.http.response import HttpResponse
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
-from django.urls import reverse
 
-from recipes.models import (
-    Favorite,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    ShoppingCart,
-    Tag,
-)
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            ShoppingCart, Tag)
 from users.models import Follow
 
 from .addition import counting_shop_list
 from .filters import RecipeFilter
 from .pagination import UserPagination
 from .permissions import IsAuthorOrReadOnly
-from .serializers import (
-    CustomChangePasswordSerializer,
-    CustomCreateUserSerializer,
-    CustomUserSerializer,
-    FavoriteSerializer,
-    FollowCreateSerializer,
-    FollowSerializer,
-    Ingredientserializer,
-    RecipeCreateSerializer,
-    RecipeMiniSerializer,
-    RecipeReadSerializer,
-    ShoppingCartSerializer,
-    TagSerializer,
-)
+from .serializers import (CustomChangePasswordSerializer,
+                          CustomCreateUserSerializer, CustomUserSerializer,
+                          FavoriteSerializer, FollowCreateSerializer,
+                          FollowSerializer, Ingredientserializer,
+                          RecipeCreateSerializer, RecipeMiniSerializer,
+                          RecipeReadSerializer, ShoppingCartSerializer,
+                          TagSerializer)
 
 User = get_user_model()
 
@@ -293,9 +279,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_short_link(self, request, pk=None):
         recipe = self.get_object()
         short_link = recipe.get_or_create_short_link()
-        short_url = request.build_absolute_uri(f"/s/{short_link}")
-        return Response({"short-link": short_url},
+        short_url = request.build_absolute_uri(f'/s/{short_link}')
+        return Response({'short-link': short_url},
                         status=status.HTTP_200_OK)
+
 
 def redirect_short_link(request, short_id):
     recipe = get_object_or_404(Recipe, short_link=short_id)

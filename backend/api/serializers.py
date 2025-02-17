@@ -1,22 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from djoser.serializers import (
-    SetPasswordSerializer,
-    UserCreateSerializer,
-    UserSerializer,
-)
+from djoser.serializers import (SetPasswordSerializer, UserCreateSerializer,
+                                UserSerializer)
 from rest_framework import serializers
 from rest_framework.serializers import SerializerMethodField
 
 from foodgram.constants import MAX_INGREDIENTS, MIN_INGREDIENTS
-from recipes.models import (
-    Favorite,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    ShoppingCart,
-    Tag,
-)
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            ShoppingCart, Tag)
 from users.models import Follow
 
 from .fields import Base64ImageField
