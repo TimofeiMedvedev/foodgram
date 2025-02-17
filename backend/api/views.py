@@ -10,21 +10,34 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                            ShoppingCart, Tag)
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag,
+)
 from users.models import Follow
 
 from .addition import counting_shop_list
 from .filters import RecipeFilter
 from .pagination import UserPagination
 from .permissions import IsAuthorOrReadOnly
-from .serializers import (CustomChangePasswordSerializer,
-                          CustomCreateUserSerializer, CustomUserSerializer,
-                          FavoriteSerializer, FollowCreateSerializer,
-                          FollowSerializer, Ingredientserializer,
-                          RecipeCreateSerializer, RecipeMiniSerializer,
-                          RecipeReadSerializer, ShoppingCartSerializer,
-                          TagSerializer)
+from .serializers import (
+    CustomChangePasswordSerializer,
+    CustomCreateUserSerializer,
+    CustomUserSerializer,
+    FavoriteSerializer,
+    FollowCreateSerializer,
+    FollowSerializer,
+    Ingredientserializer,
+    RecipeCreateSerializer,
+    RecipeMiniSerializer,
+    RecipeReadSerializer,
+    ShoppingCartSerializer,
+    TagSerializer,
+)
 
 User = get_user_model()
 
